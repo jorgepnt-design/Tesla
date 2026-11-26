@@ -6,7 +6,7 @@ import { write } from '../lib/storage';
 export function ConsentPage() {
   const [checked, setChecked] = useState(false);
   return (
-    <div className="flex min-h-full items-center justify-center p-8">
+    <div className="flex min-h-full items-center justify-center p-5 sm:p-8">
       <div className="fade-in w-full max-w-2xl">
         <div className="mb-8 flex items-center gap-3">
           <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/15 text-accent">
@@ -14,7 +14,7 @@ export function ConsentPage() {
           </span>
           <span className="text-2xl font-semibold">CarTV</span>
         </div>
-        <h1 className="mb-6 text-5xl font-bold tracking-tight">Bevor es losgeht</h1>
+        <h1 className="mb-6 text-3xl font-bold tracking-tight sm:text-5xl">Bevor es losgeht</h1>
         <button
           onClick={() => setChecked((c) => !c)}
           className="flex w-full items-start gap-4 rounded-3xl bg-panel p-6 text-left ring-1 ring-line"
@@ -26,7 +26,7 @@ export function ConsentPage() {
           >
             {checked && <Check className="h-6 w-6" />}
           </span>
-          <span className="text-xl leading-relaxed text-white/85">
+          <span className="text-lg leading-relaxed text-white/85 sm:text-xl">
             Ich bin mindestens 18 Jahre alt. Wer fährt, schaut nicht zu und bedient CarTV nicht – Videos nur im Stand
             oder für Mitfahrende, wo das erlaubt ist.
           </span>

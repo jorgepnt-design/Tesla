@@ -59,7 +59,7 @@ export function CredentialsForm({ onSaved }: { onSaved?: () => void }) {
   );
 
   return (
-    <div className="space-y-4 rounded-3xl bg-panel p-6 ring-1 ring-line">
+    <div className="space-y-4 rounded-3xl bg-panel p-4 ring-1 ring-line sm:p-6">
       {field('apiKey', 'API-Schlüssel')}
       {field('clientId', 'OAuth-Client-ID')}
       {field('clientSecret', 'OAuth-Client-Secret', true)}
@@ -84,7 +84,7 @@ export function CredentialsForm({ onSaved }: { onSaved?: () => void }) {
 
 function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
   return (
-    <li className="flex gap-5 rounded-2xl bg-panel p-5 ring-1 ring-line">
+    <li className="flex gap-4 rounded-2xl bg-panel p-4 ring-1 ring-line sm:gap-5 sm:p-5">
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/20 text-lg font-bold text-accent">{n}</span>
       <span>
         <span className="block text-xl font-semibold">{title}</span>

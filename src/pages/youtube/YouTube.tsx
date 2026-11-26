@@ -83,7 +83,7 @@ export function YouTubePage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="YouTube durchsuchen"
           enterKeyHint="search"
-          className="h-16 flex-1 bg-transparent text-xl outline-none placeholder:text-white/35"
+          className="h-14 min-w-0 flex-1 bg-transparent text-lg outline-none placeholder:text-white/35 md:h-16 md:text-xl"
         />
         {submitted && (
           <button
@@ -174,7 +174,7 @@ function Playlists() {
   }
   if (!data.length) return <Notice>Du hast noch keine Playlists.</Notice>;
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-x-5 gap-y-7">
+    <div className="grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
       {data.map((p) => (
         <button key={p.id} onClick={() => setOpen(p)} className="text-left active:scale-[0.98]">
           <span className="relative block aspect-video overflow-hidden rounded-2xl bg-panel-2">

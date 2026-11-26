@@ -34,8 +34,8 @@ export function SettingsPage() {
 
       <SectionTitle>YouTube</SectionTitle>
       <div className="space-y-4 rounded-2xl bg-panel p-5 ring-1 ring-line">
-        <div className="flex items-center justify-between gap-4">
-          <span className="text-xl">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <span className="text-lg md:text-xl">
             {signedIn ? 'Mit Google angemeldet' : canSignIn ? 'Nicht angemeldet' : canBrowse ? 'Nur Suche und Trends (ohne Anmeldung)' : 'Nicht eingerichtet'}
           </span>
           <div className="flex gap-2">
@@ -53,8 +53,8 @@ export function SettingsPage() {
       </div>
 
       <SectionTitle>Verlauf</SectionTitle>
-      <div className="flex items-center justify-between rounded-2xl bg-panel p-5 ring-1 ring-line">
-        <span className="text-xl">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-panel p-5 ring-1 ring-line">
+        <span className="text-lg md:text-xl">
           {recents.length} zuletzt gesehen · {favorites.length} Favoriten
         </span>
         <button onClick={clear} disabled={!recents.length} className="rounded-full bg-panel-2 px-5 py-3 text-lg font-semibold disabled:opacity-40">

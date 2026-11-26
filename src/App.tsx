@@ -16,7 +16,7 @@ const NAV = [
   { path: '/iptv', label: 'Mein IPTV', icon: Radio },
   { path: '/youtube', label: 'YouTube', icon: Youtube },
   { path: '/games', label: 'Spiele', icon: Gamepad2, soon: true },
-  { path: '/settings', label: 'Einstellungen', icon: Settings },
+  { path: '/settings', label: 'Einstellungen', short: 'Optionen', icon: Settings },
 ];
 
 export default function App() {
@@ -44,28 +44,30 @@ export default function App() {
 
   return (
     <PlayerProvider>
-      <div className="flex h-full">
-        <nav className="flex w-[124px] shrink-0 flex-col items-center gap-2 border-r border-line bg-black/40 py-6">
-          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/15 text-accent">
+      <div className="flex h-full flex-col md:flex-row">
+        {/* Querformat/Auto: Seitenleiste links · Hochformat/Handy: Leiste unten */}
+        <nav className="fixed inset-x-0 bottom-0 z-40 flex shrink-0 items-stretch justify-around border-t border-line bg-ink/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur md:static md:w-[124px] md:flex-col md:items-center md:justify-start md:gap-2 md:border-r md:border-t-0 md:bg-black/40 md:px-0 md:py-6">
+          <div className="mb-4 hidden h-14 w-14 items-center justify-center rounded-2xl bg-accent/15 text-accent md:flex">
             <Tv className="h-8 w-8" />
           </div>
-          {NAV.map(({ path: p, label, icon: Icon, soon }) => {
+          {NAV.map(({ path: p, label, short, icon: Icon, soon }) => {
             const active = path === p;
             return (
               <button
                 key={p}
                 onClick={() => navigate(p)}
-                className={`flex w-[104px] flex-col items-center gap-1 rounded-2xl py-3 text-sm font-medium transition-colors ${
+                className={`flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-2 text-[11px] font-medium transition-colors md:w-[104px] md:flex-none md:py-3 md:text-sm ${
                   active ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white/80'
                 } ${soon ? 'opacity-60' : ''}`}
               >
-                <Icon className={`h-8 w-8 ${active ? 'text-accent' : ''}`} />
-                {label}
+                <Icon className={`h-6 w-6 md:h-8 md:w-8 ${active ? 'text-accent' : ''}`} />
+                <span className="max-w-full truncate md:hidden">{short ?? label}</span>
+                <span className="hidden md:inline">{label}</span>
               </button>
             );
           })}
         </nav>
-        <main key={path} className="fade-in min-w-0 flex-1 overflow-y-auto px-10 py-8">
+        <main key={path} className="fade-in min-w-0 flex-1 overflow-y-auto px-4 pb-28 pt-5 sm:px-6 md:px-10 md:py-8">
           {page}
         </main>
       </div>

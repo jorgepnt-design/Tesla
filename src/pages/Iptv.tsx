@@ -126,19 +126,19 @@ function AddSource({ onAdded, onCancel }: { onAdded: (s: Source) => void; onCanc
 
   return (
     <div className="max-w-3xl space-y-6">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <KindButton active={kind === 'xtream'} onClick={() => setKind('xtream')} icon={<Server className="h-8 w-8" />} title="Xtream-Login" text="Server, Benutzername, Passwort" />
         <KindButton active={kind === 'm3u'} onClick={() => setKind('m3u')} icon={<Link2 className="h-8 w-8" />} title="M3U-Link" text="Link zu einer Senderliste" />
       </div>
 
-      <div className="space-y-4 rounded-3xl bg-panel p-6 ring-1 ring-line">
+      <div className="space-y-4 rounded-3xl bg-panel p-4 ring-1 ring-line sm:p-6">
         <Input label="Name (optional)" value={name} onChange={setName} placeholder="z. B. Mein Anbieter" />
         {kind === 'm3u' ? (
           <Input label="M3U-Link" value={url} onChange={setUrl} placeholder="https://…/playlist.m3u" type="url" />
         ) : (
           <>
             <Input label="Server" value={server} onChange={setServer} placeholder="https://anbieter.example:443" type="url" />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input label="Benutzername" value={username} onChange={setUsername} />
               <Input label="Passwort" value={password} onChange={setPassword} type="password" />
             </div>
@@ -175,12 +175,12 @@ function KindButton({ active, onClick, icon, title, text }: { active: boolean; o
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-4 rounded-3xl p-5 text-left ring-2 transition ${
+      className={`flex min-w-0 items-center gap-4 rounded-3xl p-4 text-left ring-2 transition sm:p-5 ${
         active ? 'bg-accent/10 ring-accent' : 'bg-panel ring-line'
       }`}
     >
       <span className={active ? 'text-accent' : 'text-white/50'}>{icon}</span>
-      <span>
+      <span className="min-w-0">
         <span className="block text-xl font-semibold">{title}</span>
         <span className="block text-base text-white/50">{text}</span>
       </span>

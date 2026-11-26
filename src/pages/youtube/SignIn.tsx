@@ -53,12 +53,12 @@ export function SignInDialog({ onClose }: { onClose: () => void }) {
   }, [attempt]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-8" onClick={onClose}>
-      <div className="fade-in relative w-full max-w-4xl rounded-3xl bg-panel p-10 ring-1 ring-line" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4 sm:p-8" onClick={onClose}>
+      <div className="fade-in relative w-full max-w-4xl rounded-3xl bg-panel p-6 ring-1 ring-line sm:p-10" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} aria-label="Schließen" className="absolute right-5 top-5 rounded-full p-3 text-white/60 hover:bg-white/10">
           <X className="h-7 w-7" />
         </button>
-        <h2 className="text-3xl font-bold">Mit dem Handy anmelden</h2>
+        <h2 className="pr-10 text-2xl font-bold sm:text-3xl">Mit dem Handy anmelden</h2>
         <p className="mt-2 text-lg text-white/55">Dein Google-Passwort tippst du nur am Handy ein – nie im Auto.</p>
 
         {error ? (
@@ -73,9 +73,9 @@ export function SignInDialog({ onClose }: { onClose: () => void }) {
             <Loader2 className="h-7 w-7 animate-spin" /> Code wird angefordert …
           </div>
         ) : (
-          <div className="mt-8 flex items-center gap-10">
-            {qr && <img src={qr} alt="QR-Code zu google.com/device" className="h-60 w-60 rounded-2xl bg-white p-2" />}
-            <ol className="flex-1 space-y-5 text-xl">
+          <div className="mt-6 flex flex-col items-center gap-6 sm:mt-8 sm:flex-row sm:gap-10">
+            {qr && <img src={qr} alt="QR-Code zu google.com/device" className="h-48 w-48 rounded-2xl bg-white p-2 sm:h-60 sm:w-60" />}
+            <ol className="w-full flex-1 space-y-5 text-lg sm:text-xl">
               <li className="flex gap-4">
                 <Step n={1} />
                 <span>
@@ -86,7 +86,7 @@ export function SignInDialog({ onClose }: { onClose: () => void }) {
                 <Step n={2} />
                 <span>
                   Diesen Code eingeben:
-                  <span className="mt-2 block font-mono text-5xl font-bold tracking-widest text-white">{code.userCode}</span>
+                  <span className="mt-2 block font-mono text-4xl font-bold tracking-widest text-white sm:text-5xl">{code.userCode}</span>
                 </span>
               </li>
               <li className="flex gap-4">

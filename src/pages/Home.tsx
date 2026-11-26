@@ -22,8 +22,8 @@ export function HomePage() {
   return (
     <>
       <header className="pb-4">
-        <h1 className="text-4xl font-bold tracking-tight">{greeting} 👋</h1>
-        <p className="mt-1 text-lg text-white/55">Live-TV, dein IPTV und YouTube auf dem großen Bildschirm.</p>
+        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{greeting} 👋</h1>
+        <p className="mt-1 text-base text-white/55 md:text-lg">Live-TV, dein IPTV und YouTube auf dem großen Bildschirm.</p>
       </header>
 
       {continueWatching.length > 0 && (
@@ -50,11 +50,11 @@ export function HomePage() {
       {sources.length === 0 && (
         <button
           onClick={() => navigate('/iptv')}
-          className="mt-8 flex w-full items-center gap-5 rounded-3xl bg-gradient-to-r from-sky-500/20 to-violet-500/15 p-6 text-left ring-1 ring-line"
+          className="mt-8 flex w-full items-center gap-4 rounded-3xl bg-gradient-to-r from-sky-500/20 to-violet-500/15 p-5 text-left ring-1 ring-line md:gap-5 md:p-6"
         >
           <Radio className="h-10 w-10 text-accent" />
           <span className="flex-1">
-            <span className="block text-2xl font-semibold">Eigenes IPTV hinzufügen</span>
+            <span className="block text-xl font-semibold md:text-2xl">Eigenes IPTV hinzufügen</span>
             <span className="block text-lg text-white/60">M3U-Link oder Xtream-Login deines Anbieters</span>
           </span>
           <ChevronRight className="h-8 w-8 text-white/50" />

@@ -57,7 +57,7 @@ export function VideoCard({ video, queue, ratio }: { video: Video; queue: Video[
 
 export function VideoGrid({ videos }: { videos: Video[] }) {
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-x-5 gap-y-7">
+    <div className="grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
       {videos.map((v) => (
         <VideoCard key={v.id} video={v} queue={videos} />
       ))}
@@ -70,7 +70,7 @@ export function VideoRow({ items }: { items: { video: Video; ratio?: number }[] 
   return (
     <div className="scroll-x -mx-1 flex gap-4 overflow-x-auto px-1 pb-2">
       {items.map(({ video, ratio }) => (
-        <div key={video.id} className="w-[320px] shrink-0">
+        <div key={video.id} className="w-[260px] shrink-0 md:w-[320px]">
           <VideoCard video={video} queue={queue} ratio={ratio} />
         </div>
       ))}

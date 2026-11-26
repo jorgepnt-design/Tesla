@@ -8,10 +8,10 @@ import { ChannelLogo } from './ChannelLogo';
 
 export function PageTitle({ title, subtitle, right }: { title: string; subtitle?: string; right?: ReactNode }) {
   return (
-    <header className="flex items-end justify-between gap-4 pb-6">
-      <div>
-        <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
-        {subtitle && <p className="mt-1 text-lg text-white/55">{subtitle}</p>}
+    <header className="flex flex-wrap items-end justify-between gap-4 pb-5 md:pb-6">
+      <div className="min-w-0">
+        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{title}</h1>
+        {subtitle && <p className="mt-1 text-base text-white/55 md:text-lg">{subtitle}</p>}
       </div>
       {right}
     </header>
@@ -19,14 +19,14 @@ export function PageTitle({ title, subtitle, right }: { title: string; subtitle?
 }
 
 export function SectionTitle({ children }: { children: ReactNode }) {
-  return <h2 className="mb-3 mt-8 text-2xl font-semibold first:mt-0">{children}</h2>;
+  return <h2 className="mb-3 mt-8 text-xl font-semibold first:mt-0 md:text-2xl">{children}</h2>;
 }
 
 export function Chip({ active, onClick, children }: { active?: boolean; onClick: () => void; children: ReactNode }) {
   return (
     <button
       onClick={onClick}
-      className={`shrink-0 rounded-full px-5 py-3 text-lg font-medium transition-colors ${
+      className={`shrink-0 rounded-full px-4 py-2.5 text-base font-medium transition-colors md:px-5 md:py-3 md:text-lg ${
         active ? 'bg-white text-black' : 'bg-panel-2 text-white/80 hover:bg-white/10'
       }`}
     >
@@ -63,7 +63,7 @@ export function ChannelCard({ channel, list }: { channel: Channel; list: Channel
       onClick={() => play(channel, list)}
       className="group flex w-full min-w-0 items-center gap-4 overflow-hidden rounded-2xl bg-panel p-3 text-left ring-1 ring-line transition hover:bg-panel-2 active:scale-[0.98]"
     >
-      <ChannelLogo channel={channel} size={64} />
+      <ChannelLogo channel={channel} size={56} />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-lg font-semibold">{channel.name}</span>
         <span className="block truncate text-sm text-white/45">
@@ -80,7 +80,7 @@ export function ChannelRow({ channels }: { channels: Channel[] }) {
   return (
     <div className="scroll-x -mx-1 flex gap-3 overflow-x-auto px-1 pb-2">
       {channels.map((c) => (
-        <div key={c.id} className="w-[300px] shrink-0">
+        <div key={c.id} className="w-[260px] shrink-0 md:w-[300px]">
           <ChannelCard channel={c} list={channels} />
         </div>
       ))}
@@ -122,7 +122,7 @@ export function ChannelBrowser({ channels, emptyText }: { channels: Channel[]; e
             setLimit(PAGE);
           }}
           placeholder={`${channels.length} Sender durchsuchen`}
-          className="h-16 flex-1 bg-transparent text-xl outline-none placeholder:text-white/35"
+          className="h-14 min-w-0 flex-1 bg-transparent text-lg outline-none placeholder:text-white/35 md:h-16 md:text-xl"
         />
         {query && (
           <button onClick={() => setQuery('')} aria-label="Suche leeren" className="rounded-full p-2 text-white/60">
@@ -147,7 +147,7 @@ export function ChannelBrowser({ channels, emptyText }: { channels: Channel[]; e
       {shown.length === 0 ? (
         <Notice>{emptyText ?? 'Keine Sender gefunden.'}</Notice>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
           {shown.map((c) => (
             <ChannelCard key={c.id} channel={c} list={filtered} />
           ))}

@@ -183,7 +183,7 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
 
       {status.kind === 'error' && (
         <div className="absolute inset-0 flex items-center justify-center p-8" onClick={(e) => e.stopPropagation()}>
-          <div className="max-w-xl rounded-3xl bg-panel/95 p-8 text-center">
+          <div className="max-w-xl rounded-3xl bg-panel/95 p-6 text-center sm:p-8">
             <p className="text-2xl font-semibold">{channel.name}</p>
             <p className="mt-3 text-lg text-white/70">{status.message}</p>
             <div className="mt-6 flex justify-center gap-3">
@@ -202,7 +202,7 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
 
       {/* Bedienleiste oben */}
       <div
-        className={`absolute inset-x-0 top-0 flex items-center gap-4 bg-gradient-to-b from-black/85 to-transparent p-5 pb-14 transition-opacity ${
+        className={`absolute inset-x-0 top-0 flex items-center gap-2 bg-gradient-to-b from-black/85 to-transparent p-3 pb-12 transition-opacity sm:gap-4 sm:p-5 sm:pb-14 ${
           chrome ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={(e) => e.stopPropagation()}
@@ -210,10 +210,12 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
         <RoundButton label="Zurück" onClick={onClose}>
           <ChevronLeft className="h-8 w-8" />
         </RoundButton>
-        <ChannelLogo channel={channel} size={56} />
+        <span className="hidden sm:block">
+          <ChannelLogo channel={channel} size={56} />
+        </span>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-2xl font-semibold">{channel.name}</p>
-          <p className="truncate text-base text-white/65">
+          <p className="truncate text-lg font-semibold sm:text-2xl">{channel.name}</p>
+          <p className="truncate text-sm text-white/65 sm:text-base">
             {current ? (
               <>
                 <span className="mr-2 rounded bg-red-600 px-1.5 py-0.5 text-xs font-bold text-white">LIVE</span>
@@ -247,7 +249,7 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
       {/* Sender wechseln */}
       {multi && (
         <div
-          className={`absolute left-5 top-1/2 flex -translate-y-1/2 flex-col gap-4 transition-opacity ${
+          className={`absolute left-3 top-1/2 flex -translate-y-1/2 flex-col gap-4 transition-opacity sm:left-5 ${
             chrome ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
           onClick={(e) => e.stopPropagation()}
@@ -309,7 +311,7 @@ function RoundButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full backdrop-blur active:scale-95 ${
+      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full backdrop-blur active:scale-95 sm:h-16 sm:w-16 [&_svg]:max-h-6 [&_svg]:max-w-6 sm:[&_svg]:max-h-none sm:[&_svg]:max-w-none ${
         active ? 'bg-accent text-black' : 'bg-white/12 text-white hover:bg-white/20'
       }`}
     >

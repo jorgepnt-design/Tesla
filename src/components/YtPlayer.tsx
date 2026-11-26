@@ -110,7 +110,7 @@ export function YtPlayer({ video, queue, onPick, onClose }: { video: Video; queu
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black">
-      <div className="flex items-center gap-4 px-5 py-3">
+      <div className="flex items-center gap-3 px-3 py-3 sm:gap-4 sm:px-5">
         <button
           onClick={onClose}
           aria-label="Zurück"
@@ -119,15 +119,16 @@ export function YtPlayer({ video, queue, onPick, onClose }: { video: Video; queu
           <ChevronLeft className="h-8 w-8" />
         </button>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xl font-semibold">{video.title}</p>
+          <p className="truncate text-base font-semibold sm:text-xl">{video.title}</p>
           <p className="truncate text-base text-white/55">{video.channel}</p>
         </div>
         {next && (
           <button
             onClick={() => onPick(next)}
-            className="flex shrink-0 items-center gap-2 rounded-full bg-white/10 px-5 py-3 text-lg font-semibold active:scale-95"
+            aria-label="Nächstes"
+            className="flex shrink-0 items-center gap-2 rounded-full bg-white/10 px-4 py-3 text-lg font-semibold active:scale-95 sm:px-5"
           >
-            <SkipForward className="h-5 w-5" /> Nächstes
+            <SkipForward className="h-5 w-5" /> <span className="hidden sm:inline">Nächstes</span>
           </button>
         )}
       </div>
