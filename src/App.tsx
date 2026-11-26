@@ -1,4 +1,4 @@
-import { Gamepad2, Home, Radio, Settings, Tv, Youtube } from 'lucide-react';
+import { Gamepad2, Home, Radio, Settings, Smartphone, Tv, Youtube } from 'lucide-react';
 import { navigate, useRoute } from './lib/router';
 import { useStored } from './lib/storage';
 import { PlayerProvider } from './components/PlayerContext';
@@ -10,12 +10,15 @@ import { SettingsPage } from './pages/Settings';
 import { SoonPage } from './pages/Soon';
 import { YouTubePage } from './pages/youtube/YouTube';
 import { HelpPage } from './pages/Help';
+import { CastPage } from './pages/Cast';
 
 const NAV = [
   { path: '/', label: 'Start', icon: Home },
   { path: '/tv', label: 'Gratis-TV', icon: Tv },
   { path: '/iptv', label: 'Mein IPTV', icon: Radio },
   { path: '/youtube', label: 'YouTube', icon: Youtube },
+  // Nur auf dem großen Bildschirm (Auto) sinnvoll: dort wird das Handy gekoppelt
+  { path: '/cast', label: 'Handy', icon: Smartphone, carOnly: true },
   { path: '/games', label: 'Spiele', icon: Gamepad2, soon: true },
   { path: '/settings', label: 'Einstellungen', short: 'Optionen', icon: Settings },
 ];
@@ -38,6 +41,8 @@ export default function App() {
         return <YouTubePage />;
       case '/help':
         return <HelpPage />;
+      case '/cast':
+        return <CastPage />;
       case '/games':
         return <SoonPage title="Spiele" text="Spiele vom eigenen PC (über Moonlight/Sunshine) sind in Planung." />;
       default:
@@ -47,20 +52,20 @@ export default function App() {
 
   return (
     <PlayerProvider>
-      <div className="flex h-full flex-col md:flex-row">
+      <div className="flex min-h-0 flex-1 flex-col md:flex-row">
         {/* Querformat/Auto: Seitenleiste links · Hochformat/Handy: Leiste unten */}
         <nav className="fixed inset-x-0 bottom-0 z-40 flex shrink-0 items-stretch justify-around border-t border-line bg-ink/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur md:static md:w-[124px] md:flex-col md:items-center md:justify-start md:gap-2 md:border-r md:border-t-0 md:bg-black/40 md:px-0 md:py-6">
           <div className="mb-4 hidden h-14 w-14 items-center justify-center rounded-2xl bg-accent/15 text-accent md:flex">
             <Tv className="h-8 w-8" />
           </div>
-          {NAV.map(({ path: p, label, short, icon: Icon, soon }) => {
+          {NAV.map(({ path: p, label, short, icon: Icon, soon, carOnly }) => {
             const active = path === p;
             return (
               <button
                 key={p}
                 onClick={() => navigate(p)}
                 aria-label={label}
-                className={`flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-2 text-[11px] font-medium transition-colors md:w-[104px] md:flex-none md:py-3 md:text-sm ${
+                className={`${carOnly ? 'hidden md:flex' : 'flex'} min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-2 text-[11px] font-medium transition-colors md:w-[104px] md:flex-none md:py-3 md:text-sm ${
                   active ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white/80'
                 } ${soon ? 'opacity-60' : ''}`}
               >

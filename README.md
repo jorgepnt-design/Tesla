@@ -11,6 +11,7 @@ Live-TV und dein eigenes IPTV auf dem großen Touchscreen im Auto – direkt im 
 - **Mein IPTV:** eigener Anbieter per **Xtream-Login** (Server, Benutzername, Passwort – mit Login-Prüfung und Programmvorschau „jetzt / danach“) oder **M3U-Link**; mehrere Quellen möglich
 - **Player:** Vollbild, Sender hoch/runter, Senderliste zum Wechseln, Favorit, Ton, Vollbild-Modus; HLS über [hls.js](https://github.com/video-dev/hls.js); verständliche Fehlermeldungen (offline, http-Adresse, kein Browserzugriff)
 - **YouTube mit eigenem Konto:** offizieller YouTube-Player (IFrame-API), Anmeldung per Handy über Googles Geräte-Ablauf (QR-Code + Code, Passwort nur am Handy), Abos, Trends, Live, „Mag ich“, Playlists, Suche und „Weiterschauen“ mit Fortschritt
+- **Vom iPhone senden:** Handy per QR-Code als Fernbedienung koppeln; angetippte Sender, YouTube-Videos und Links laufen im Auto (Ende-zu-Ende verschlüsselt über ntfy.sh, Schlüssel nur im QR-Code)
 - **Suche und Gruppen** in jeder Senderliste, schrittweises Laden großer Listen
 - **Datenschutz:** Quellen, Zugangsdaten, Favoriten und Verlauf liegen nur im `localStorage` dieses Browsers
 

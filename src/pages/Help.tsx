@@ -98,7 +98,27 @@ export function HelpPage() {
         </Steps>
       </Section>
 
-      <Section letter="E" title="Im Tesla">
+      <Section letter="E" title="Vom iPhone senden (Fernbedienung)">
+        <Steps>
+          <li>
+            Im Tesla links auf <b>„Handy“</b> tippen – ein QR-Code erscheint.
+          </li>
+          <li>QR-Code mit der iPhone-Kamera scannen und den Link öffnen.</li>
+          <li>
+            Auf dem iPhone erscheint oben die blaue Leiste <b>„Fernbedienung fürs Auto“</b>. Jetzt läuft alles, was du auf
+            dem iPhone antippst, im Tesla: Gratis-TV, dein IPTV und YouTube.
+          </li>
+          <li>
+            In der Leiste: <b>▲ ▼</b> Sender wechseln, <b>Link</b> einen YouTube-Link senden, <b>■</b> stoppen, <b>✕</b>{' '}
+            Fernbedienung beenden (dann spielt das iPhone wieder selbst ab).
+          </li>
+        </Steps>
+        <Tip>
+          Auf dem iPhone müssen IPTV-Anbieter und YouTube eingerichtet sein. Die CarTV-Seite im Tesla muss geöffnet sein.
+        </Tip>
+      </Section>
+
+      <Section letter="F" title="Im Tesla">
         <ul className="list-disc space-y-2 pl-6">
           <li>
             Die App im Tesla-Browser öffnen und als <b>Favorit</b> speichern: <CopyValue value={APP_URL} />
