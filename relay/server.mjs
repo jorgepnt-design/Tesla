@@ -51,6 +51,14 @@ const server = createServer(async (req, res) => {
   }
 });
 
+server.on('error', (e) => {
+  if (e.code === 'EADDRINUSE') {
+    console.log(`Die CarTV-Weiterleitung läuft bereits (Port ${PORT} ist belegt) – dieses Fenster kann geschlossen werden.`);
+    process.exit(0);
+  }
+  throw e;
+});
+
 server.listen(PORT, () => {
   console.log(`CarTV-Weiterleitung läuft auf http://localhost:${PORT}`);
   console.log('Fenster offen lassen. Beenden mit Strg+C.');

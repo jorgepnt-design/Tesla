@@ -6,8 +6,12 @@
  */
 import { read } from './storage';
 
-/** Eingebaute Adresse: Repository-Variable PROXY_URL, sonst die Vercel-Weiterleitung */
-export const DEFAULT_PROXY = import.meta.env.VITE_PROXY_URL || 'https://cartv-proxy.vercel.app';
+/**
+ * Eingebaute Adresse: Repository-Variable PROXY_URL, sonst die Weiterleitung auf Jorges PC zu Hause
+ * (Tailscale Funnel). Die Vercel-Weiterleitung (https://cartv-proxy.vercel.app) wird vom aktuellen
+ * Anbieter blockiert, bleibt aber als Alternative für andere Anbieter bestehen.
+ */
+export const DEFAULT_PROXY = import.meta.env.VITE_PROXY_URL || 'https://book-j707v10f81.tailee718e.ts.net';
 
 /** In den Optionen eingetragene Adresse (z. B. die Weiterleitung zu Hause) hat Vorrang */
 export function proxyBase(): string {
