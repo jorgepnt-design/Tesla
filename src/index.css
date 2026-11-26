@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #060608;
+  --color-panel: #111116;
+  --color-panel-2: #18181f;
+  --color-line: #26262e;
+  --color-accent: #38bdf8;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink);
+  color: #f4f4f5;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+/* Große Bedienelemente für den Touchscreen im Auto */
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.scroll-x {
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fade-in {
+  animation: fade-in 0.25s ease-out;
+}
+
+/* Logos ohne Bild: Initialen auf Farbverlauf */
+.logo-fallback {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+}
