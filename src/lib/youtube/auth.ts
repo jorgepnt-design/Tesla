@@ -37,7 +37,15 @@ async function post(path: string, params: Record<string, string>) {
 export async function startDeviceFlow(): Promise<DeviceCode> {
   const { clientId } = getConfig();
   const { ok, data } = await post('/device/code', { client_id: clientId, scope: SCOPE });
-  if (!ok) throw new Error(describe(data.error));
+  if (!ok) {
+    // In diesem Schritt zählt nur die Client-ID
+    if (data.error === 'invalid_client') {
+      throw new Error(
+        'Google erkennt die Client-ID nicht. Neu angelegte Clients brauchen bei Google oft 5–30 Minuten, bis sie funktionieren – kurz warten und neu versuchen. Sonst prüfen, ob die Client-ID vollständig ist (endet auf .apps.googleusercontent.com).',
+      );
+    }
+    throw new Error(describe(data.error));
+  }
   return {
     deviceCode: data.device_code,
     userCode: data.user_code,
@@ -125,7 +133,7 @@ function describe(error?: string): string {
       return 'Der Code ist abgelaufen. Starte die Anmeldung neu.';
     case 'invalid_client':
     case 'unauthorized_client':
-      return 'Der OAuth-Client ist ungültig. Prüfe Client-ID und Client-Secret in den Einstellungen (Typ „Fernseher und Geräte mit begrenzter Eingabe“).';
+      return 'Das Client-Secret passt nicht zur Client-ID. Prüfe es in den Einstellungen (Clients → CarTV → Clientschlüssel).';
     case 'invalid_scope':
       return 'Für diesen OAuth-Client ist der YouTube-Zugriff nicht freigeschaltet.';
     default:
