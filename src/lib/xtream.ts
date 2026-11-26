@@ -36,8 +36,20 @@ export async function checkLogin(src: XtreamSource): Promise<{ expires?: number;
   };
 }
 
+/** Bevorzugtes Stream-Format laut Konto: HLS, wenn erlaubt, sonst MPEG-TS */
+async function preferredFormat(src: XtreamSource): Promise<'m3u8' | 'ts'> {
+  try {
+    const data = await getJson<{ user_info?: { allowed_output_formats?: string[] } }>(api(src));
+    const formats = data.user_info?.allowed_output_formats ?? [];
+    return formats.length && !formats.includes('m3u8') ? 'ts' : 'm3u8';
+  } catch {
+    return 'm3u8';
+  }
+}
+
 export async function loadLive(src: XtreamSource): Promise<Channel[]> {
-  const [categories, streams] = await Promise.all([
+  const [format, categories, streams] = await Promise.all([
+    preferredFormat(src),
     getJson<{ category_id: string; category_name: string }[]>(api(src, { action: 'get_live_categories' })),
     getJson<{ stream_id: number; name: string; stream_icon?: string; category_id?: string }[]>(
       api(src, { action: 'get_live_streams' }),
@@ -49,8 +61,8 @@ export async function loadLive(src: XtreamSource): Promise<Channel[]> {
     name: s.name?.trim() || 'Unbenannt',
     logo: s.stream_icon || undefined,
     group: names.get(String(s.category_id)) || undefined,
-    // HLS statt MPEG-TS, damit der Browser abspielen kann
-    url: `${base(src)}/live/${encodeURIComponent(src.username)}/${encodeURIComponent(src.password)}/${s.stream_id}.m3u8`,
+    // HLS, wenn das Konto es erlaubt; sonst MPEG-TS (spielt der Player über mpegts.js ab)
+    url: `${base(src)}/live/${encodeURIComponent(src.username)}/${encodeURIComponent(src.password)}/${s.stream_id}.${format}`,
     sourceId: src.id,
     streamId: s.stream_id,
   }));

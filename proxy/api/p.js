@@ -117,9 +117,14 @@ async function handle(request) {
   if (range) headers.range = range;
 
   let upstream;
+  // Zeitlimit nur bis die Antwort beginnt – Live-Streams (MPEG-TS) laufen danach unbegrenzt weiter
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new DOMException('Zeitüberschreitung', 'TimeoutError')), 20000);
   try {
-    upstream = await fetch(target, { headers, redirect: 'follow', signal: AbortSignal.timeout(20000) });
+    upstream = await fetch(target, { headers, redirect: 'follow', signal: controller.signal });
+    clearTimeout(timer);
   } catch (e) {
+    clearTimeout(timer);
     // Grund mitliefern (z. B. ENOTFOUND, ECONNREFUSED, TimeoutError), damit Fehler eingegrenzt werden können
     const reason = e?.cause?.code || e?.name || 'unbekannt';
     console.error('upstream failed', host, reason);

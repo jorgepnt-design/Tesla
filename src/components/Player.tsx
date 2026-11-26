@@ -5,6 +5,7 @@
  */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Hls from 'hls.js';
+import mpegts from 'mpegts.js';
 import {
   ChevronLeft,
   ChevronDown,
@@ -61,51 +62,97 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
   const hideTimer = useRef<number>();
   const { isFavorite, toggle } = useFavorites();
 
-  // Stream laden
+  // Stream laden: HLS (.m3u8) über hls.js, MPEG-TS (.ts, wie bei vielen IPTV-Anbietern) über mpegts.js
   useEffect(() => {
     const video = videoRef.current!;
     setStatus({ kind: 'loading' });
     setDetail('');
     let hls: Hls | null = null;
+    let ts: mpegts.Player | null = null;
+    let cancelled = false;
 
     const onPlaying = () => setStatus({ kind: 'playing' });
-    const onError = () => setStatus({ kind: 'error', message: playbackError(channel, 'network') });
+    const onError = () => !ts && setStatus({ kind: 'error', message: playbackError(channel, 'network') });
     video.addEventListener('playing', onPlaying);
     video.addEventListener('error', onError);
 
-    const isHls = /\.m3u8($|\?)/i.test(channel.url) || !/\.(mp4|webm|mkv|ts)($|\?)/i.test(channel.url);
-    if (needsProxy(channel.url) && !proxyBase()) {
-      setStatus({ kind: 'error', message: playbackError(channel) });
-    } else if (isHls && Hls.isSupported()) {
-      hls = new Hls({ lowLatencyMode: false, maxBufferLength: 20, manifestLoadingMaxRetry: 2, fragLoadingMaxRetry: 3 });
+    const fail = (info: string) => {
+      setDetail(info);
+      setStatus({ kind: 'error', message: playbackError(channel, 'network') });
+    };
+
+    const play = () =>
+      video.play().catch(() => {
+        // Autoplay mit Ton blockiert → stumm starten, Ton per Tipp
+        video.muted = true;
+        setMuted(true);
+        video.play().catch(() => {});
+      });
+
+    const startTs = (url: string) => {
+      if (!mpegts.getFeatureList().mseLivePlayback) return fail('MPEG-TS wird von diesem Browser nicht unterstützt');
+      ts = mpegts.createPlayer(
+        { type: 'mpegts', isLive: true, url: viaProxy(url) },
+        { enableWorker: true, liveBufferLatencyChasing: true, lazyLoad: false, enableStashBuffer: true },
+      );
+      ts.on(mpegts.Events.ERROR, (type: string, det: string, info?: { code?: number; msg?: string }) => {
+        console.warn('mpegts', type, det, info);
+        fail(['ts', det, info?.code && info.code > 0 ? info.code : ''].filter(Boolean).join(' '));
+      });
+      ts.attachMediaElement(video);
+      ts.load();
+      play();
+    };
+
+    // Xtream-Anbieter liefern oft nur MPEG-TS: bei abgelehntem HLS automatisch auf .ts wechseln
+    const tsFallback = /\/live\/[^/]+\/[^/]+\/\d+\.m3u8$/i.test(channel.url) ? channel.url.replace(/\.m3u8$/i, '.ts') : null;
+
+    const startHls = (url: string) => {
+      hls = new Hls({ lowLatencyMode: false, maxBufferLength: 20, manifestLoadingMaxRetry: 1, fragLoadingMaxRetry: 3 });
       hls.on(Hls.Events.ERROR, (_e, data) => {
         if (!data.fatal) return;
-        // Technische Details für die Fehlersuche (z. B. „manifestLoadError 403“)
         console.warn('hls', data.details, data.response?.code ?? '', data.url ?? '');
-        setDetail([data.details, data.response?.code].filter(Boolean).join(' '));
         if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
           hls?.recoverMediaError();
           return;
         }
-        setStatus({ kind: 'error', message: playbackError(channel, 'network') });
         hls?.destroy();
+        hls = null;
+        if (tsFallback && data.details === Hls.ErrorDetails.MANIFEST_LOAD_ERROR && !cancelled) {
+          startTs(tsFallback);
+          return;
+        }
+        fail([data.details, data.response?.code].filter(Boolean).join(' '));
       });
-      hls.loadSource(viaProxy(channel.url));
+      hls.loadSource(viaProxy(url));
       hls.attachMedia(video);
+      play();
+    };
+
+    const isTs = /\.ts($|\?)/i.test(channel.url);
+    const isHls = /\.m3u8($|\?)/i.test(channel.url) || !/\.(mp4|webm|mkv|ts)($|\?)/i.test(channel.url);
+    if (needsProxy(channel.url) && !proxyBase()) {
+      setStatus({ kind: 'error', message: playbackError(channel) });
+    } else if (isTs) {
+      startTs(channel.url);
+    } else if (isHls && Hls.isSupported()) {
+      startHls(channel.url);
     } else {
       video.src = viaProxy(channel.url);
+      play();
     }
-    video.play().catch(() => {
-      // Autoplay mit Ton blockiert → stumm starten, Ton per Tipp
-      video.muted = true;
-      setMuted(true);
-      video.play().catch(() => {});
-    });
 
     return () => {
+      cancelled = true;
       video.removeEventListener('playing', onPlaying);
       video.removeEventListener('error', onError);
       hls?.destroy();
+      if (ts) {
+        ts.pause();
+        ts.unload();
+        ts.detachMediaElement();
+        ts.destroy();
+      }
       video.removeAttribute('src');
       video.load();
     };
