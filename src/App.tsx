@@ -56,6 +56,7 @@ export default function App() {
               <button
                 key={p}
                 onClick={() => navigate(p)}
+                aria-label={label}
                 className={`flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl py-2 text-[11px] font-medium transition-colors md:w-[104px] md:flex-none md:py-3 md:text-sm ${
                   active ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white/80'
                 } ${soon ? 'opacity-60' : ''}`}
