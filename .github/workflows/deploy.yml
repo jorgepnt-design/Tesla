@@ -31,6 +31,8 @@ jobs:
           VITE_YT_API_KEY: ${{ vars.YT_API_KEY }}
           VITE_YT_CLIENT_ID: ${{ vars.YT_CLIENT_ID }}
           VITE_YT_CLIENT_SECRET: ${{ vars.YT_CLIENT_SECRET }}
+          # Optional: Adresse der eigenen Weiterleitung für http-Anbieter (z. B. https://mein-pc.xyz.ts.net)
+          VITE_PROXY_URL: ${{ vars.PROXY_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

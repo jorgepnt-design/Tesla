@@ -17,7 +17,7 @@ Live-TV und dein eigenes IPTV auf dem großen Touchscreen im Auto – direkt im 
 ## Grenzen
 
 - Nur `https://`-Streams: Auf einer https-Seite blockiert der Browser `http://`-Adressen. Viele IPTV-Anbieter bieten auch https an.
-- Anbieter, die nur per `http://` erreichbar sind, laufen automatisch über die eigene Weiterleitung im Ordner [`proxy/`](proxy/) (Vercel-Funktion unter `https://cartv-proxy.vercel.app`). Neue Anbieter müssen dort einmalig in `ALLOWED_HOSTS` freigegeben werden.
+- Anbieter, die nur per `http://` erreichbar sind, laufen automatisch über die eigene Weiterleitung im Ordner [`proxy/`](proxy/) (Vercel-Funktion unter `https://cartv-proxy.vercel.app`). Neue Anbieter müssen dort einmalig in `ALLOWED_HOSTS` freigegeben werden. Sperrt ein Anbieter Rechenzentren, läuft die Weiterleitung stattdessen auf einem PC zu Hause – siehe [`relay/`](relay/README.md) (mit Tailscale Funnel); deren Adresse trägt man in der App unter *Optionen → Weiterleitung* ein oder als Repository-Variable `PROXY_URL`.
 - Programmvorschau derzeit nur für Xtream-Quellen.
 
 ## YouTube einrichten

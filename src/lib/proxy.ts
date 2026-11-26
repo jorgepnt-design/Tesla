@@ -4,10 +4,14 @@
  * (Ordner proxy/, läuft auf Vercel) holt sie ab und liefert sie verschlüsselt aus.
  * https-Adressen werden weiterhin direkt geladen.
  */
-const DEFAULT_PROXY = import.meta.env.VITE_PROXY_URL ?? 'https://cartv-proxy.vercel.app';
+import { read } from './storage';
 
+/** Eingebaute Adresse: Repository-Variable PROXY_URL, sonst die Vercel-Weiterleitung */
+export const DEFAULT_PROXY = import.meta.env.VITE_PROXY_URL || 'https://cartv-proxy.vercel.app';
+
+/** In den Optionen eingetragene Adresse (z. B. die Weiterleitung zu Hause) hat Vorrang */
 export function proxyBase(): string {
-  return DEFAULT_PROXY.replace(/\/+$/, '');
+  return (read<string>('proxy.url', '') || DEFAULT_PROXY).trim().replace(/\/+$/, '');
 }
 
 export function needsProxy(url: string): boolean {

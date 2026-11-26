@@ -6,6 +6,7 @@ import { SourceSummary } from './Iptv';
 import { signOut, useSignedIn } from '../lib/youtube/auth';
 import { useYtConfig } from '../lib/youtube/config';
 import { CredentialsForm } from './youtube/Setup';
+import { DEFAULT_PROXY } from '../lib/proxy';
 
 export function SettingsPage() {
   const [sources, setSources] = useSources();
@@ -16,6 +17,8 @@ export function SettingsPage() {
   const signedIn = useSignedIn();
   const { canSignIn, canBrowse } = useYtConfig();
   const [editYt, setEditYt] = useState(false);
+  const [proxyUrl, setProxyUrl] = useStored<string>('proxy.url', '');
+  const [proxyDraft, setProxyDraft] = useState(proxyUrl);
 
   return (
     <div className="max-w-3xl">
@@ -31,6 +34,34 @@ export function SettingsPage() {
           ))}
         </div>
       )}
+
+      <SectionTitle>Weiterleitung für http-Anbieter</SectionTitle>
+      <div className="space-y-3 rounded-2xl bg-panel p-5 ring-1 ring-line">
+        <p className="text-base text-white/55">
+          Anbieter, die nur über http:// erreichbar sind, laufen über diese Adresse. Für die Weiterleitung zu Hause die
+          https-Adresse von Tailscale eintragen (z. B. https://mein-pc.xyz.ts.net). Leer lassen für die eingebaute
+          Adresse ({DEFAULT_PROXY.replace(/^https:\/\//, '')}).
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <input
+            value={proxyDraft}
+            onChange={(e) => setProxyDraft(e.target.value)}
+            placeholder={DEFAULT_PROXY}
+            type="url"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+            className="h-14 min-w-0 flex-1 rounded-2xl bg-panel-2 px-4 text-lg outline-none ring-1 ring-line focus:ring-accent"
+          />
+          <button
+            onClick={() => setProxyUrl(proxyDraft.trim().replace(/\/+$/, ''))}
+            disabled={proxyDraft.trim().replace(/\/+$/, '') === proxyUrl}
+            className="rounded-full bg-white px-6 py-3 text-lg font-semibold text-black disabled:bg-white/20 disabled:text-white/50"
+          >
+            Speichern
+          </button>
+        </div>
+      </div>
 
       <SectionTitle>YouTube</SectionTitle>
       <div className="space-y-4 rounded-2xl bg-panel p-5 ring-1 ring-line">
