@@ -25,6 +25,7 @@ import { read } from '../lib/storage';
 import { loadShortEpg } from '../lib/xtream';
 import { ChannelLogo } from './ChannelLogo';
 import { needsProxy, proxyBase, viaProxy } from '../lib/proxy';
+import { navigate } from '../lib/router';
 
 interface Props {
   channel: Channel;
@@ -193,9 +194,18 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
             <p className="text-2xl font-semibold">{channel.name}</p>
             <p className="mt-3 text-lg text-white/70">{status.message}</p>
             {detail && <p className="mt-2 font-mono text-sm text-white/35">Technisch: {detail}</p>}
-            <div className="mt-6 flex justify-center gap-3">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
               <button onClick={() => setAttempt((a) => a + 1)} className="flex items-center gap-2 rounded-full bg-white/10 px-6 py-3 text-lg font-semibold">
                 <RotateCcw className="h-5 w-5" /> Nochmal
+              </button>
+              <button
+                onClick={() => {
+                  onClose();
+                  navigate('/help');
+                }}
+                className="rounded-full bg-white/10 px-6 py-3 text-lg font-semibold"
+              >
+                Anleitung
               </button>
               {multi && (
                 <button onClick={() => onStep(1)} className="rounded-full bg-accent px-6 py-3 text-lg font-semibold text-black">

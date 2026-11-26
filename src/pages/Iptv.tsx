@@ -1,4 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { BookOpen } from 'lucide-react';
+import { navigate } from '../lib/router';
 import { Link2, Plus, RefreshCw, Server, Trash2 } from 'lucide-react';
 import { explainLoadError, loadSource, useSources } from '../lib/library';
 import { checkLogin } from '../lib/xtream';
@@ -16,7 +18,7 @@ export function IptvPage() {
   if (sources.length === 0 || adding) {
     return (
       <>
-        <PageTitle title="Mein IPTV" subtitle="Dein Anbieter, deine Sender – gespeichert nur in diesem Browser" />
+        <PageTitle title="Mein IPTV" subtitle="Dein Anbieter, deine Sender – gespeichert nur in diesem Browser" right={<HelpButton />} />
         <AddSource
           onAdded={(s) => {
             setSources((list) => [...list, s]);
@@ -34,12 +36,15 @@ export function IptvPage() {
       <PageTitle
         title="Mein IPTV"
         right={
+          <div className="flex gap-2">
+          <HelpButton />
           <button
             onClick={() => setAdding(true)}
             className="flex items-center gap-2 rounded-full bg-panel-2 px-5 py-3 text-lg font-semibold ring-1 ring-line"
           >
             <Plus className="h-5 w-5" /> Quelle
           </button>
+          </div>
         }
       />
       {sources.length > 1 && (
@@ -53,6 +58,17 @@ export function IptvPage() {
       )}
       <SourceChannels key={active.id} source={active} />
     </>
+  );
+}
+
+function HelpButton() {
+  return (
+    <button
+      onClick={() => navigate('/help')}
+      className="flex items-center gap-2 rounded-full bg-panel-2 px-5 py-3 text-lg font-semibold ring-1 ring-line"
+    >
+      <BookOpen className="h-5 w-5" /> Anleitung
+    </button>
   );
 }
 

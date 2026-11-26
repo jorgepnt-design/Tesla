@@ -7,6 +7,7 @@ import { signOut, useSignedIn } from '../lib/youtube/auth';
 import { useYtConfig } from '../lib/youtube/config';
 import { CredentialsForm } from './youtube/Setup';
 import { DEFAULT_PROXY } from '../lib/proxy';
+import { navigate } from '../lib/router';
 
 export function SettingsPage() {
   const [sources, setSources] = useSources();
@@ -22,7 +23,14 @@ export function SettingsPage() {
 
   return (
     <div className="max-w-3xl">
-      <PageTitle title="Einstellungen" />
+      <PageTitle
+        title="Einstellungen"
+        right={
+          <button onClick={() => navigate('/help')} className="rounded-full bg-panel-2 px-5 py-3 text-lg font-semibold ring-1 ring-line">
+            Anleitung
+          </button>
+        }
+      />
 
       <SectionTitle>IPTV-Quellen</SectionTitle>
       {sources.length === 0 ? (

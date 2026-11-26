@@ -9,6 +9,7 @@ import { IptvPage } from './pages/Iptv';
 import { SettingsPage } from './pages/Settings';
 import { SoonPage } from './pages/Soon';
 import { YouTubePage } from './pages/youtube/YouTube';
+import { HelpPage } from './pages/Help';
 
 const NAV = [
   { path: '/', label: 'Start', icon: Home },
@@ -35,6 +36,8 @@ export default function App() {
         return <SettingsPage />;
       case '/youtube':
         return <YouTubePage />;
+      case '/help':
+        return <HelpPage />;
       case '/games':
         return <SoonPage title="Spiele" text="Spiele vom eigenen PC (über Moonlight/Sunshine) sind in Planung." />;
       default:
