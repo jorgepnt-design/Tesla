@@ -7,7 +7,8 @@ import { checkLogin } from '../lib/xtream';
 import { useStored } from '../lib/storage';
 import { uid } from '../lib/uid';
 import type { Channel, Source } from '../lib/types';
-import { ChannelBrowser, Chip, Notice, PageTitle, Spinner } from '../components/ui';
+import { Chip, Notice, PageTitle, Spinner } from '../components/ui';
+import { CountryBrowser } from '../components/CountryBrowser';
 
 export function IptvPage() {
   const [sources, setSources] = useSources();
@@ -100,7 +101,8 @@ function SourceChannels({ source }: { source: Source }) {
     );
   }
   if (!channels) return <Spinner label={`${source.name} wird geladen …`} />;
-  return <ChannelBrowser channels={channels} emptyText="Diese Quelle enthält keine Live-Sender." />;
+  if (!channels.length) return <Notice>Diese Quelle enthält keine Live-Sender.</Notice>;
+  return <CountryBrowser channels={channels} storageKey={source.id} />;
 }
 
 function AddSource({ onAdded, onCancel }: { onAdded: (s: Source) => void; onCancel?: () => void }) {

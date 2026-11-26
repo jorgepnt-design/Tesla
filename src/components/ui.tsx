@@ -91,7 +91,18 @@ export function ChannelRow({ channels }: { channels: Channel[] }) {
 const PAGE = 120;
 
 /** Sendergitter mit Suche und Gruppenfilter; rendert große Listen schrittweise */
-export function ChannelBrowser({ channels, emptyText }: { channels: Channel[]; emptyText?: string }) {
+export function ChannelBrowser({
+  channels,
+  emptyText,
+  groupLabel = (g: string) => g,
+  placeholder,
+}: {
+  channels: Channel[];
+  emptyText?: string;
+  /** Anzeige der Gruppen-Chips, z. B. ohne Länderkürzel */
+  groupLabel?: (group: string) => string;
+  placeholder?: string;
+}) {
   const [query, setQuery] = useState('');
   const [group, setGroup] = useState<string | null>(null);
   const [limit, setLimit] = useState(PAGE);
@@ -121,7 +132,7 @@ export function ChannelBrowser({ channels, emptyText }: { channels: Channel[]; e
             setQuery(e.target.value);
             setLimit(PAGE);
           }}
-          placeholder={`${channels.length} Sender durchsuchen`}
+          placeholder={placeholder ?? `${channels.length} Sender durchsuchen`}
           className="h-14 min-w-0 flex-1 bg-transparent text-lg outline-none placeholder:text-white/35 md:h-16 md:text-xl"
         />
         {query && (
@@ -138,7 +149,7 @@ export function ChannelBrowser({ channels, emptyText }: { channels: Channel[]; e
           </Chip>
           {groups.slice(0, 60).map((g) => (
             <Chip key={g} active={group === g} onClick={() => setGroup(group === g ? null : g)}>
-              {g}
+              {groupLabel(g)}
             </Chip>
           ))}
         </div>
