@@ -7,7 +7,7 @@ Umgebungsvariablen im Vercel-Projekt:
 | Variable | Bedeutung |
 |---|---|
 | `ALLOWED_ORIGINS` | Adressen der App, z. B. `https://jorgepnt-design.github.io` |
-| `ALLOWED_HOSTS` | Hostnamen der IPTV-Anbieter, kommagetrennt, z. B. `tv.anbieter.example` |
+| `ALLOWED_HOSTS` | Weitere Hostnamen von IPTV-Anbietern, kommagetrennt (zusätzlich zu den in `api/p.js` fest hinterlegten) |
 | `PROXY_SECRET` | Zufälliger geheimer Wert zum Signieren der Segment-Adressen |
 
 Nach Änderungen an den Variablen neu veröffentlichen.

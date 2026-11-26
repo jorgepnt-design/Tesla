@@ -20,7 +20,8 @@ const list = (v) =>
     .filter(Boolean);
 
 const ALLOWED_ORIGINS = list(process.env.ALLOWED_ORIGINS);
-const ALLOWED_HOSTS = list(process.env.ALLOWED_HOSTS);
+// Freigegebene IPTV-Anbieter: fest hinterlegt, ergänzbar über die Umgebungsvariable ALLOWED_HOSTS
+const ALLOWED_HOSTS = [...list('ip.sltv.be'), ...list(process.env.ALLOWED_HOSTS)];
 const SECRET = process.env.PROXY_SECRET || '';
 
 function sign(url) {
