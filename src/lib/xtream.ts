@@ -3,6 +3,7 @@
  * Endpunkt: {server}/player_api.php?username=…&password=…&action=…
  */
 import type { Channel, EpgEntry, Source } from './types';
+import { proxiedFetch } from './proxy';
 
 type XtreamSource = Extract<Source, { kind: 'xtream' }>;
 
@@ -16,7 +17,7 @@ function api(src: XtreamSource, params: Record<string, string> = {}): string {
 }
 
 async function getJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+  const res = await proxiedFetch(url);
   if (!res.ok) throw new Error(`Server antwortet mit ${res.status}`);
   return res.json() as Promise<T>;
 }

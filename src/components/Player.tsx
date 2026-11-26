@@ -24,6 +24,7 @@ import { useFavorites } from '../lib/library';
 import { read } from '../lib/storage';
 import { loadShortEpg } from '../lib/xtream';
 import { ChannelLogo } from './ChannelLogo';
+import { needsProxy, proxyBase, viaProxy } from '../lib/proxy';
 
 interface Props {
   channel: Channel;
@@ -36,7 +37,7 @@ interface Props {
 type Status = { kind: 'loading' } | { kind: 'playing' } | { kind: 'error'; message: string };
 
 function playbackError(channel: Channel, detail?: string): string {
-  if (channel.url.startsWith('http://') && location.protocol === 'https:') {
+  if (needsProxy(channel.url) && !proxyBase()) {
     return 'Dieser Sender nutzt eine unverschlüsselte http://-Adresse, die der Browser auf einer sicheren Seite blockiert.';
   }
   if (detail === 'cors' || detail === 'network') {
@@ -70,7 +71,7 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
     video.addEventListener('error', onError);
 
     const isHls = /\.m3u8($|\?)/i.test(channel.url) || !/\.(mp4|webm|mkv|ts)($|\?)/i.test(channel.url);
-    if (channel.url.startsWith('http://') && location.protocol === 'https:') {
+    if (needsProxy(channel.url) && !proxyBase()) {
       setStatus({ kind: 'error', message: playbackError(channel) });
     } else if (isHls && Hls.isSupported()) {
       hls = new Hls({ lowLatencyMode: false, maxBufferLength: 20, manifestLoadingMaxRetry: 2, fragLoadingMaxRetry: 3 });
@@ -83,10 +84,10 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
         setStatus({ kind: 'error', message: playbackError(channel, 'network') });
         hls?.destroy();
       });
-      hls.loadSource(channel.url);
+      hls.loadSource(viaProxy(channel.url));
       hls.attachMedia(video);
     } else {
-      video.src = channel.url;
+      video.src = viaProxy(channel.url);
     }
     video.play().catch(() => {
       // Autoplay mit Ton blockiert → stumm starten, Ton per Tipp

@@ -4,4 +4,5 @@ interface ImportMetaEnv {
   readonly VITE_YT_API_KEY?: string;
   readonly VITE_YT_CLIENT_ID?: string;
   readonly VITE_YT_CLIENT_SECRET?: string;
+  readonly VITE_PROXY_URL?: string;
 }

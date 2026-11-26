@@ -1,0 +1,6 @@
+{
+  "name": "cartv-proxy",
+  "private": true,
+  "type": "module",
+  "description": "Verschlüsselte Weiterleitung für IPTV-Anbieter, die nur über http erreichbar sind"
+}

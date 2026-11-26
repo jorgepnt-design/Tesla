@@ -3,6 +3,7 @@ import { useStored } from './storage';
 import { parseM3u } from './m3u';
 import { loadLive } from './xtream';
 import type { Channel, Source } from './types';
+import { needsProxy, proxiedFetch, proxyBase } from './proxy';
 
 const MAX_RECENT = 24;
 
@@ -35,7 +36,7 @@ export function loadSource(src: Source, force = false): Promise<Channel[]> {
     p =
       src.kind === 'xtream'
         ? loadLive(src)
-        : fetch(src.url).then(async (res) => {
+        : proxiedFetch(src.url).then(async (res) => {
             if (!res.ok) throw new Error(`Liste nicht erreichbar (${res.status})`);
             const text = await res.text();
             if (!text.includes('#EXTINF')) throw new Error('Das ist keine M3U-Senderliste.');
@@ -49,6 +50,9 @@ export function loadSource(src: Source, force = false): Promise<Channel[]> {
 
 /** Verständliche Fehlermeldung für typische Netzwerkprobleme im Browser */
 export function explainLoadError(err: unknown, url: string): string {
+  if (needsProxy(url) && proxyBase()) {
+    return err instanceof Error && !(err instanceof TypeError) ? err.message : 'Die Weiterleitung ist gerade nicht erreichbar. Versuch es gleich noch einmal.';
+  }
   if (url.startsWith('http://') && location.protocol === 'https:') {
     return 'Dein Anbieter ist nur über http:// erreichbar (eine https-Variante wurde automatisch probiert, ohne Erfolg). Der Browser lädt auf einer sicheren Seite nur https://-Adressen. Frag deinen Anbieter nach einer https-Adresse.';
   }
