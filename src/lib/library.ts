@@ -50,7 +50,7 @@ export function loadSource(src: Source, force = false): Promise<Channel[]> {
 /** Verständliche Fehlermeldung für typische Netzwerkprobleme im Browser */
 export function explainLoadError(err: unknown, url: string): string {
   if (url.startsWith('http://') && location.protocol === 'https:') {
-    return 'Die Adresse beginnt mit http:// – der Browser lädt auf einer sicheren Seite nur https://-Adressen. Frag deinen Anbieter nach einer https-Adresse.';
+    return 'Dein Anbieter ist nur über http:// erreichbar (eine https-Variante wurde automatisch probiert, ohne Erfolg). Der Browser lädt auf einer sicheren Seite nur https://-Adressen. Frag deinen Anbieter nach einer https-Adresse.';
   }
   if (err instanceof TypeError) {
     return 'Der Server ist nicht erreichbar oder erlaubt keinen Zugriff aus dem Browser (CORS). Prüfe die Adresse oder frag deinen Anbieter.';

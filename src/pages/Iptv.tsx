@@ -105,14 +105,20 @@ function AddSource({ onAdded, onCancel }: { onAdded: (s: Source) => void; onCanc
       if (kind === 'm3u') {
         const clean = url.trim();
         if (!/^https?:\/\//i.test(clean)) throw new Error('Bitte einen vollständigen Link eingeben (beginnt mit https://).');
-        source = { id: uid(), kind: 'm3u', name: name.trim() || hostName(clean), url: clean };
-        const channels = await loadSource(source);
-        if (!channels.length) throw new Error('Die Liste enthält keine Sender.');
+        source = await firstWorking(clean, async (u) => {
+          const s: Source = { id: uid(), kind: 'm3u', name: name.trim() || hostName(u), url: u };
+          const channels = await loadSource(s);
+          if (!channels.length) throw new Error('Die Liste enthält keine Sender.');
+          return s;
+        });
       } else {
         let s = server.trim().replace(/\/+$/, '');
         if (!/^https?:\/\//i.test(s)) s = `https://${s}`;
-        source = { id: uid(), kind: 'xtream', name: name.trim() || hostName(s), server: s, username: username.trim(), password };
-        await checkLogin(source);
+        source = await firstWorking(s, async (u) => {
+          const src: Source = { id: uid(), kind: 'xtream', name: name.trim() || hostName(u), server: u, username: username.trim(), password };
+          await checkLogin(src);
+          return src;
+        });
       }
       onAdded(source);
     } catch (e) {
@@ -216,6 +222,29 @@ function Input({
       />
     </label>
   );
+}
+
+/**
+ * Auf einer https-Seite sind http-Adressen gesperrt. Viele Anbieter sind aber zusätzlich per https
+ * erreichbar – deshalb zuerst die https-Varianten probieren (gleicher Port, dann Standard-Port).
+ */
+async function firstWorking<T>(url: string, attempt: (url: string) => Promise<T>): Promise<T> {
+  if (!url.startsWith('http://') || location.protocol !== 'https:') return attempt(url);
+  const u = new URL(url);
+  const candidates = new Set<string>();
+  if (u.port) candidates.add(url.replace(/^http:/, 'https:'));
+  u.protocol = 'https:';
+  u.port = '';
+  candidates.add(u.toString().replace(/\/$/, url.endsWith('/') ? '/' : ''));
+  for (const c of candidates) {
+    try {
+      return await attempt(c);
+    } catch (e) {
+      // Falsche Zugangsdaten sind eindeutig – nicht weiterprobieren
+      if (e instanceof Error && /Benutzername|nicht aktiv/.test(e.message)) throw e;
+    }
+  }
+  return attempt(url); // liefert die verständliche http-Fehlermeldung
 }
 
 function hostName(url: string): string {
