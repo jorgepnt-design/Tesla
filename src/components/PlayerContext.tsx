@@ -1,34 +1,44 @@
-/** Öffnet den Vollbild-Player von überall in der App, mit der Senderliste für Weiter/Zurück */
+/** Öffnet die Vollbild-Player (Live-TV und YouTube) von überall in der App */
 import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
 import type { Channel } from '../lib/types';
+import type { Video } from '../lib/youtube/api';
 import { useRecents } from '../lib/library';
 import { Player } from './Player';
+import { YtPlayer } from './YtPlayer';
 
 interface PlayerApi {
   play: (channel: Channel, list?: Channel[]) => void;
+  playVideo: (video: Video, queue?: Video[]) => void;
 }
 
-const Ctx = createContext<PlayerApi>({ play: () => {} });
+const Ctx = createContext<PlayerApi>({ play: () => {}, playVideo: () => {} });
 
 export function usePlayer() {
   return useContext(Ctx);
 }
 
 export function PlayerProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<{ list: Channel[]; index: number } | null>(null);
+  const [tv, setTv] = useState<{ list: Channel[]; index: number } | null>(null);
+  const [yt, setYt] = useState<{ video: Video; queue: Video[] } | null>(null);
   const { add } = useRecents();
 
   const play = useCallback(
     (channel: Channel, list?: Channel[]) => {
       const l = list && list.some((c) => c.id === channel.id) ? list : [channel];
-      setState({ list: l, index: l.findIndex((c) => c.id === channel.id) });
+      setYt(null);
+      setTv({ list: l, index: l.findIndex((c) => c.id === channel.id) });
       add(channel);
     },
     [add],
   );
 
+  const playVideo = useCallback((video: Video, queue?: Video[]) => {
+    setTv(null);
+    setYt({ video, queue: queue && queue.some((v) => v.id === video.id) ? queue : [video] });
+  }, []);
+
   const step = (delta: number) =>
-    setState((s) => {
+    setTv((s) => {
       if (!s) return s;
       const index = (s.index + delta + s.list.length) % s.list.length;
       add(s.list[index]);
@@ -36,15 +46,23 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     });
 
   return (
-    <Ctx.Provider value={{ play }}>
+    <Ctx.Provider value={{ play, playVideo }}>
       {children}
-      {state && (
+      {tv && (
         <Player
-          channel={state.list[state.index]}
-          list={state.list}
-          onPick={(c) => play(c, state.list)}
+          channel={tv.list[tv.index]}
+          list={tv.list}
+          onPick={(c) => play(c, tv.list)}
           onStep={step}
-          onClose={() => setState(null)}
+          onClose={() => setTv(null)}
+        />
+      )}
+      {yt && (
+        <YtPlayer
+          video={yt.video}
+          queue={yt.queue}
+          onPick={(v) => setYt({ video: v, queue: yt.queue })}
+          onClose={() => setYt(null)}
         />
       )}
     </Ctx.Provider>

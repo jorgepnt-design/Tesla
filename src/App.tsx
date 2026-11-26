@@ -8,12 +8,13 @@ import { FreeTvPage } from './pages/FreeTv';
 import { IptvPage } from './pages/Iptv';
 import { SettingsPage } from './pages/Settings';
 import { SoonPage } from './pages/Soon';
+import { YouTubePage } from './pages/youtube/YouTube';
 
 const NAV = [
   { path: '/', label: 'Start', icon: Home },
   { path: '/tv', label: 'Gratis-TV', icon: Tv },
   { path: '/iptv', label: 'Mein IPTV', icon: Radio },
-  { path: '/youtube', label: 'YouTube', icon: Youtube, soon: true },
+  { path: '/youtube', label: 'YouTube', icon: Youtube },
   { path: '/games', label: 'Spiele', icon: Gamepad2, soon: true },
   { path: '/settings', label: 'Einstellungen', icon: Settings },
 ];
@@ -33,7 +34,7 @@ export default function App() {
       case '/settings':
         return <SettingsPage />;
       case '/youtube':
-        return <SoonPage title="YouTube" text="YouTube mit deinem eigenen Konto kommt als Nächstes – über den offiziellen YouTube-Player." />;
+        return <YouTubePage />;
       case '/games':
         return <SoonPage title="Spiele" text="Spiele vom eigenen PC (über Moonlight/Sunshine) sind in Planung." />;
       default:

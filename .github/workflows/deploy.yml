@@ -26,6 +26,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          # Optional: YouTube-Zugangsdaten als Repository-Variablen hinterlegen (Settings → Secrets and variables → Actions → Variables)
+          VITE_YT_API_KEY: ${{ vars.YT_API_KEY }}
+          VITE_YT_CLIENT_ID: ${{ vars.YT_CLIENT_ID }}
+          VITE_YT_CLIENT_SECRET: ${{ vars.YT_CLIENT_SECRET }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

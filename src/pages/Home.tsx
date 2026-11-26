@@ -6,12 +6,15 @@ import { COUNTRY_LISTS, TOPIC_LISTS, loadFreeList, type FreeList } from '../lib/
 import type { Channel } from '../lib/types';
 import { ChannelRow, Notice, SectionTitle, Spinner } from '../components/ui';
 import { write } from '../lib/storage';
+import { useContinueWatching } from '../lib/youtube/progress';
+import { VideoRow } from '../components/VideoCard';
 
 const HOME_LISTS = [TOPIC_LISTS.find((l) => l.id === 'news')!, COUNTRY_LISTS[0], TOPIC_LISTS.find((l) => l.id === 'kids')!];
 
 export function HomePage() {
   const { favorites } = useFavorites();
   const { recents } = useRecents();
+  const continueWatching = useContinueWatching();
   const [sources] = useSources();
   const hour = new Date().getHours();
   const greeting = hour < 11 ? 'Guten Morgen' : hour < 18 ? 'Hallo' : 'Guten Abend';
@@ -20,8 +23,15 @@ export function HomePage() {
     <>
       <header className="pb-4">
         <h1 className="text-4xl font-bold tracking-tight">{greeting} 👋</h1>
-        <p className="mt-1 text-lg text-white/55">Live-TV und dein eigenes IPTV auf dem großen Bildschirm.</p>
+        <p className="mt-1 text-lg text-white/55">Live-TV, dein IPTV und YouTube auf dem großen Bildschirm.</p>
       </header>
+
+      {continueWatching.length > 0 && (
+        <>
+          <SectionTitle>Weiterschauen auf YouTube</SectionTitle>
+          <VideoRow items={continueWatching} />
+        </>
+      )}
 
       {recents.length > 0 && (
         <>

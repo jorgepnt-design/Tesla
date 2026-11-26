@@ -3,6 +3,9 @@ import { useFavorites, useRecents, useSources } from '../lib/library';
 import { clearAll, useStored } from '../lib/storage';
 import { Notice, PageTitle, SectionTitle } from '../components/ui';
 import { SourceSummary } from './Iptv';
+import { signOut, useSignedIn } from '../lib/youtube/auth';
+import { useYtConfig } from '../lib/youtube/config';
+import { CredentialsForm } from './youtube/Setup';
 
 export function SettingsPage() {
   const [sources, setSources] = useSources();
@@ -10,6 +13,9 @@ export function SettingsPage() {
   const { recents, clear } = useRecents();
   const [, setConsent] = useStored<boolean>('consent', false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const signedIn = useSignedIn();
+  const { canSignIn, canBrowse } = useYtConfig();
+  const [editYt, setEditYt] = useState(false);
 
   return (
     <div className="max-w-3xl">
@@ -25,6 +31,26 @@ export function SettingsPage() {
           ))}
         </div>
       )}
+
+      <SectionTitle>YouTube</SectionTitle>
+      <div className="space-y-4 rounded-2xl bg-panel p-5 ring-1 ring-line">
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-xl">
+            {signedIn ? 'Mit Google angemeldet' : canSignIn ? 'Nicht angemeldet' : canBrowse ? 'Nur Suche und Trends (ohne Anmeldung)' : 'Nicht eingerichtet'}
+          </span>
+          <div className="flex gap-2">
+            {signedIn && (
+              <button onClick={() => signOut()} className="rounded-full bg-panel-2 px-5 py-3 text-lg font-semibold">
+                Abmelden
+              </button>
+            )}
+            <button onClick={() => setEditYt((v) => !v)} className="rounded-full bg-panel-2 px-5 py-3 text-lg font-semibold">
+              Zugangsdaten
+            </button>
+          </div>
+        </div>
+        {editYt && <CredentialsForm onSaved={() => setEditYt(false)} />}
+      </div>
 
       <SectionTitle>Verlauf</SectionTitle>
       <div className="flex items-center justify-between rounded-2xl bg-panel p-5 ring-1 ring-line">
