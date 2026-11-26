@@ -3,8 +3,8 @@
  * Nutzt denselben Code wie die Vercel-Weiterleitung (../proxy/api/p.js), läuft aber über den
  * eigenen Internetanschluss – IPTV-Anbieter sperren private Anschlüsse in der Regel nicht.
  *
- * Start: node server.mjs   (Port über PORT, Standard 8787)
- * Erreichbar machen: tailscale funnel --bg 8787
+ * Start: node server.mjs   (Port über PORT, Standard 18787 – selten belegt)
+ * Erreichbar machen: tailscale funnel --bg 18787
  */
 import { createServer } from 'node:http';
 import { Readable } from 'node:stream';
@@ -24,7 +24,7 @@ if (!process.env.PROXY_SECRET) {
 process.env.ALLOWED_ORIGINS ??= 'https://jorgepnt-design.github.io';
 
 const { GET } = await import('../proxy/api/p.js');
-const PORT = Number(process.env.PORT || 8787);
+const PORT = Number(process.env.PORT || 18787);
 
 const server = createServer(async (req, res) => {
   try {
@@ -59,7 +59,8 @@ server.on('error', (e) => {
   throw e;
 });
 
-server.listen(PORT, () => {
-  console.log(`CarTV-Weiterleitung läuft auf http://localhost:${PORT}`);
+// Nur lokal lauschen – von außen erreichbar ist sie ausschließlich über Tailscale Funnel
+server.listen(PORT, '127.0.0.1', () => {
+  console.log(`CarTV-Weiterleitung läuft auf http://127.0.0.1:${PORT}`);
   console.log('Fenster offen lassen. Beenden mit Strg+C.');
 });

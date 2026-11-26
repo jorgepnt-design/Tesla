@@ -17,6 +17,11 @@ Die Adresse in CarTV unter **Optionen → Weiterleitung** eintragen – oder ein
 
 Freigegebene Anbieter stehen in `proxy/api/p.js` (`ALLOWED_HOSTS`); weitere lassen sich per Umgebungsvariable `ALLOWED_HOSTS` ergänzen.
 
+## Probleme
+
+- **`{"error":"Bad host."}` im Browser:** Ein anderes Programm nutzt den Port. Die Weiterleitung verwendet deshalb Port 18787; die Startdatei setzt die Tailscale-Einstellung bei jedem Start neu.
+- **„läuft bereits“:** Es ist schon ein Fenster mit der Weiterleitung offen – das zweite kann geschlossen werden.
+
 ## Automatisch mit Windows starten (optional)
 
 `Win + R` → `shell:startup` → eine Verknüpfung zu `start-weiterleitung.bat` hineinlegen.

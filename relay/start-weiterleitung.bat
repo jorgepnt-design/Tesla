@@ -23,7 +23,9 @@ if errorlevel 1 (
   exit /b 1
 )
 echo Mache die Weiterleitung per https erreichbar ...
-tailscale funnel --bg 8787
+rem Alte Einstellung (frueher Port 8787) entfernen
+tailscale funnel reset >nul 2>nul
+tailscale funnel --bg 18787
 if errorlevel 1 (
   echo.
   echo Funnel konnte nicht eingeschaltet werden. Falls sich ein Browserfenster geoeffnet hat: dort Funnel erlauben
