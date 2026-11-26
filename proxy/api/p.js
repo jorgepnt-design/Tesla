@@ -107,8 +107,11 @@ async function handle(request) {
   let upstream;
   try {
     upstream = await fetch(target, { headers, redirect: 'follow', signal: AbortSignal.timeout(20000) });
-  } catch {
-    return error(502, 'Anbieter nicht erreichbar', origin);
+  } catch (e) {
+    // Grund mitliefern (z. B. ENOTFOUND, ECONNREFUSED, TimeoutError), damit Fehler eingegrenzt werden können
+    const reason = e?.cause?.code || e?.name || 'unbekannt';
+    console.error('upstream failed', host, reason);
+    return error(502, `Anbieter nicht erreichbar (${reason})`, origin);
   }
 
   const type = upstream.headers.get('content-type') || '';

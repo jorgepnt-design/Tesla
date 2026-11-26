@@ -31,6 +31,17 @@ export async function proxiedFetch(url: string): Promise<Response> {
         : 'Die Weiterleitung hat die Anfrage abgelehnt.',
     );
   }
-  if (res.status === 502 && needsProxy(url)) throw new Error('Die Weiterleitung erreicht deinen Anbieter nicht. Prüfe die Server-Adresse.');
+  if (res.status === 502 && needsProxy(url)) {
+    const reason = (await res.text().catch(() => '')).match(/\(([^)]+)\)/)?.[1];
+    const hint =
+      reason === 'ENOTFOUND'
+        ? 'Der Servername wurde nicht gefunden – prüfe die Server-Adresse.'
+        : reason === 'ECONNREFUSED' || reason === 'ECONNRESET'
+          ? 'Der Anbieter lehnt die Verbindung ab – manche Anbieter sperren Rechenzentrums-Adressen.'
+          : reason === 'TimeoutError' || reason === 'ETIMEDOUT' || reason === 'UND_ERR_CONNECT_TIMEOUT'
+            ? 'Der Anbieter antwortet nicht – er sperrt eventuell Rechenzentrums-Adressen oder ist gerade offline.'
+            : 'Prüfe die Server-Adresse.';
+    throw new Error(`Die Weiterleitung erreicht deinen Anbieter nicht${reason ? ` (${reason})` : ''}. ${hint}`);
+  }
   return res;
 }
