@@ -45,6 +45,14 @@ function isPrivateHost(host) {
   return host.startsWith('[') || host.includes(':'); // IPv6-Literale nicht erlaubt
 }
 
+/** Adresse ohne Zugangsdaten für die Protokollausgabe */
+function redact(url) {
+  const u = new URL(url);
+  u.pathname = u.pathname.replace(/^\/(live|movie|series)\/[^/]+\/[^/]+\//, '/$1/***/***/');
+  for (const k of ['username', 'password']) if (u.searchParams.has(k)) u.searchParams.set(k, '***');
+  return `${u.host}${u.pathname}${u.search}`;
+}
+
 function cors(origin) {
   return {
     'access-control-allow-origin': origin || '*',
@@ -59,7 +67,11 @@ function error(status, message, origin) {
   return new Response(message, { status, headers: { ...cors(origin), 'content-type': 'text/plain; charset=utf-8' } });
 }
 
-/** Schreibt alle Adressen einer HLS-Playlist auf signierte Proxy-Adressen um */
+/**
+ * Schreibt alle Adressen einer HLS-Playlist auf signierte Proxy-Adressen um.
+ * Die Adressen sind relativ („p?u=…“): Der Player löst sie gegen die Adresse der Playlist auf.
+ * So stimmen sie auch hinter Tailscale Funnel, wo die Weiterleitung ihre öffentliche Adresse nicht kennt.
+ */
 function rewritePlaylist(text, base, self) {
   const wrap = (uri) => {
     const abs = new URL(uri, base).toString();
@@ -115,13 +127,15 @@ async function handle(request) {
   }
 
   const type = upstream.headers.get('content-type') || '';
+  console.log(`${upstream.status} ${type || '-'} ${redact(target)}${upstream.redirected ? ` → ${redact(new URL(upstream.url))}` : ''}`);
   const isPlaylist = /mpegurl/i.test(type) || /\.m3u8($|\?)/i.test(target.pathname + target.search);
   const out = { ...cors(origin), 'cache-control': 'no-store' };
 
   if (isPlaylist && upstream.ok) {
     const text = await upstream.text();
     // Nur echte HLS-Playlists umschreiben; M3U-Senderlisten bleiben unverändert
-    const body = /#EXT-X-/.test(text) ? rewritePlaylist(text, upstream.url || target.toString(), `${self.origin}${self.pathname}`) : text;
+    const relativeSelf = self.pathname.split('/').pop() || 'p';
+    const body = /#EXT-X-/.test(text) ? rewritePlaylist(text, upstream.url || target.toString(), relativeSelf) : text;
     return new Response(body, { status: 200, headers: { ...out, 'content-type': 'application/vnd.apple.mpegurl' } });
   }
 

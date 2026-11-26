@@ -56,6 +56,7 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [epg, setEpg] = useState<EpgEntry[]>([]);
   const [attempt, setAttempt] = useState(0);
+  const [detail, setDetail] = useState('');
   const hideTimer = useRef<number>();
   const { isFavorite, toggle } = useFavorites();
 
@@ -63,6 +64,7 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
   useEffect(() => {
     const video = videoRef.current!;
     setStatus({ kind: 'loading' });
+    setDetail('');
     let hls: Hls | null = null;
 
     const onPlaying = () => setStatus({ kind: 'playing' });
@@ -77,6 +79,9 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
       hls = new Hls({ lowLatencyMode: false, maxBufferLength: 20, manifestLoadingMaxRetry: 2, fragLoadingMaxRetry: 3 });
       hls.on(Hls.Events.ERROR, (_e, data) => {
         if (!data.fatal) return;
+        // Technische Details für die Fehlersuche (z. B. „manifestLoadError 403“)
+        console.warn('hls', data.details, data.response?.code ?? '', data.url ?? '');
+        setDetail([data.details, data.response?.code].filter(Boolean).join(' '));
         if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
           hls?.recoverMediaError();
           return;
@@ -187,6 +192,7 @@ export function Player({ channel, list, onPick, onStep, onClose }: Props) {
           <div className="max-w-xl rounded-3xl bg-panel/95 p-6 text-center sm:p-8">
             <p className="text-2xl font-semibold">{channel.name}</p>
             <p className="mt-3 text-lg text-white/70">{status.message}</p>
+            {detail && <p className="mt-2 font-mono text-sm text-white/35">Technisch: {detail}</p>}
             <div className="mt-6 flex justify-center gap-3">
               <button onClick={() => setAttempt((a) => a + 1)} className="flex items-center gap-2 rounded-full bg-white/10 px-6 py-3 text-lg font-semibold">
                 <RotateCcw className="h-5 w-5" /> Nochmal
